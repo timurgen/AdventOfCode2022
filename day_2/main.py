@@ -28,15 +28,48 @@
 # X - B -> 88 - 66 == 22
 
 
+# A = 65
+# B = 66
+# C = 67
+
+# X = 88 - loose
+# Y = 89 - draw
+# Z = 90 - win
+
+lines = open('input.txt', 'r').readlines()
+
 # part 1
 def get_round_outcome(op, me):
     result = ord(me) - ord(op)
     return 3 if result == 23 else 6 if result in [21, 24] else 0
 
 total_score = 0
-print(sum([get_round_outcome(c[1], c[0]) + (-87 + ord(c[1])) for line in open('input.txt', 'r').readlines() if (c := tuple(line.strip().split(" ")))]))
+print(sum([get_round_outcome(c[0], c[1]) + (-87 + ord(c[1])) for line in lines if (c := tuple(line.strip().split(" ")))]))
 
 
 
+# part 2
+def pick_draw(op_choice):
+    return chr(ord('Y') + (-66 + ord(op_choice)))
 
+def pick_loose(op_choice):
+    return 'X' if op_choice == 'B' else 'Y' if op_choice == 'C' else 'Z'
+
+def pick_win(op_choice):
+    return 'X' if op_choice == 'C' else 'Y' if op_choice == 'A' else 'Z'
+
+sum = 0
+for line in lines:
+    op_choice, my_choice = tuple(line.strip().split(" "))
+    if my_choice == 'Y':
+        my_choice = pick_draw(op_choice)
+    elif my_choice == 'X':
+        my_choice = pick_loose(op_choice)
+    else:
+        my_choice = pick_win(op_choice)
+
+    sum += get_round_outcome(op_choice, my_choice) + (-87 + ord(my_choice))
+
+print(sum)    
     
+
