@@ -12,6 +12,8 @@
 bits 64
 default rel
 
+%include "../utils/functions.asm"
+
 SECTION     .data
 
 path:   db  "input.txt", 0
@@ -34,12 +36,8 @@ global      _start
 extern      printf
 
 _start: 
-   mov     rsi, 0              ; flag for readonly access mode (O_RDONLY)
-   mov     rdi, path           ; filename we want to open
-   mov     rdx, 0666o          ; access flags
-   mov     rax, 2              ; invoke SYS_OPEN (kernel opcode 2)
-   syscall
-
+   lea     rcx, [path]
+   call    open_file
 
    test    rax, rax            ; check for error and jump to error handler if so
    js      error_open
